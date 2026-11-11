@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Asset | Cybersecurity Risk Assessment</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+        <div class="brand">
+            CYBER<span>SECURITY</span><br>
+            Risk Assessment
+        </div>
+
+        <p class="nav-label">MAIN MENU</p>
+        <a href="/" class="nav-link">Dashboard</a>
+        <a href="/assets" class="nav-link active">Asset Management</a>
+        <a href="#" class="nav-link">Threat Identification</a>
+        <a href="#" class="nav-link">Vulnerability Assessment</a>
+
+        <p class="nav-label">RISK MANAGEMENT</p>
+        <a href="#" class="nav-link">Risk Assessment</a>
+        <a href="#" class="nav-link">Risk Register</a>
+        <a href="#" class="nav-link">Mitigation Plans</a>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <h1>Edit Organisational Asset</h1>
+                <p>Update the information associated with this asset.</p>
+            </div>
+
+            <div class="profile">Administrator</div>
+        </header>
+
+        <section class="panel asset-form-panel">
+
+            <h3>Update Asset Details</h3>
+
+            <form method="POST">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="name">Asset Name</label>
+                        <input type="text" id="name" name="name"
+                               value="{{ asset.name }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="asset_type">Asset Type</label>
+                        <select id="asset_type" name="asset_type" required>
+                            {% for item in ["Hardware", "Software", "Data", "Network", "Personnel", "Other"] %}
+                            <option value="{{ item }}"
+                                {% if asset.asset_type == item %}selected{% endif %}>
+                                {{ item }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="importance">Importance Level</label>
+                        <select id="importance" name="importance" required>
+                            {% for item in ["Low", "Medium", "High", "Critical"] %}
+                            <option value="{{ item }}"
+                                {% if asset.importance == item %}selected{% endif %}>
+                                {{ item }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="description">Asset Description</label>
+                        <textarea id="description" name="description"
+                                  rows="4">{{ asset.description or "" }}</textarea>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="primary-button">
+                    Save Changes
+                </button>
+
+                <a href="/assets" class="cancel-link">Cancel</a>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

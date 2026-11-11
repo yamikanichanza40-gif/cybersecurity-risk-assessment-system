@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Threat | Cybersecurity Risk Assessment</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            CYBER<span>SECURITY</span><br>
+            Risk Assessment
+        </div>
+
+        <p class="nav-label">MAIN MENU</p>
+
+        <a href="/" class="nav-link">Dashboard</a>
+        <a href="/assets" class="nav-link">Asset Management</a>
+        <a href="/threats" class="nav-link active">Threat Identification</a>
+        <a href="#" class="nav-link">Vulnerability Assessment</a>
+
+        <p class="nav-label">RISK MANAGEMENT</p>
+
+        <a href="#" class="nav-link">Risk Assessment</a>
+        <a href="#" class="nav-link">Risk Register</a>
+        <a href="#" class="nav-link">Mitigation Plans</a>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+                <h1>Edit Threat</h1>
+                <p>Update the details of an identified organisational threat.</p>
+            </div>
+
+            <div class="profile">Administrator</div>
+
+        </header>
+
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="notice {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+
+
+        <section class="panel asset-form-panel">
+
+            <h3>Update Threat Information</h3>
+
+            <form method="POST"
+                  action="{{ url_for('edit_threat', threat_id=threat.id) }}">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label for="asset_id">Affected Asset</label>
+
+                        <select id="asset_id" name="asset_id" required>
+
+                            {% for asset in assets %}
+
+                                <option value="{{ asset.id }}"
+                                    {% if asset.id == threat.asset_id %}selected{% endif %}>
+
+                                    {{ asset.name }}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="threat_name">Threat Name</label>
+
+                        <input
+                            type="text"
+                            id="threat_name"
+                            name="threat_name"
+                            value="{{ threat.threat_name }}"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="threat_category">Threat Category</label>
+
+                        <select id="threat_category"
+                                name="threat_category"
+                                required>
+
+                            {% for item in [
+                                "Malware",
+                                "Social Engineering",
+                                "Insider Threat",
+                                "Network Attack",
+                                "Physical Threat",
+                                "Natural Disaster",
+                                "Other"
+                            ] %}
+
+                                <option value="{{ item }}"
+                                    {% if threat.threat_category == item %}selected{% endif %}>
+
+                                    {{ item }}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group full-width">
+
+                        <label for="description">Threat Description</label>
+
+                        <textarea
+                            id="description"
+                            name="description"
+                            rows="4">{{ threat.description or "" }}</textarea>
+
+                    </div>
+
+                </div>
+
+
+                <button type="submit" class="primary-button">
+                    Save Changes
+                </button>
+
+                <a href="/threats" class="cancel-link">
+                    Cancel
+                </a>
+
+            </form>
+
+        </section>
+
+
+        <footer class="footer">
+            Cybersecurity Risk Assessment System | Edit Threat
+        </footer>
+
+    </main>
+
+</div>
+
+</body>
+</html>

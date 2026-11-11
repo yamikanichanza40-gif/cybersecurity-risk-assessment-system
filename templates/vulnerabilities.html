@@ -1,0 +1,283 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vulnerability Assessment | Cybersecurity Risk Assessment</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            CYBER<span>SECURITY</span><br>
+            Risk Assessment
+        </div>
+
+        <p class="nav-label">MAIN MENU</p>
+
+        <a href="/" class="nav-link">Dashboard</a>
+        <a href="/assets" class="nav-link">Asset Management</a>
+        <a href="/threats" class="nav-link">Threat Identification</a>
+        <a href="/vulnerabilities" class="nav-link active">Vulnerability Assessment</a>
+
+        <p class="nav-label">RISK MANAGEMENT</p>
+
+        <a href="#" class="nav-link">Risk Assessment</a>
+        <a href="#" class="nav-link">Risk Register</a>
+        <a href="#" class="nav-link">Mitigation Plans</a>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+                <h1>Vulnerability Assessment</h1>
+                <p>Identify and manage security weaknesses affecting organisational assets.</p>
+            </div>
+
+            <div class="profile">Administrator</div>
+
+        </header>
+
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="notice {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+
+
+        <!-- VULNERABILITY REGISTRATION FORM -->
+
+        <section class="panel asset-form-panel">
+
+            <h3>Register New Vulnerability</h3>
+
+            {% if assets %}
+
+            <form method="POST" action="{{ url_for('manage_vulnerabilities') }}">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label for="asset_id">Affected Asset</label>
+
+                        <select id="asset_id" name="asset_id" required>
+
+                            <option value="">Select an asset</option>
+
+                            {% for asset in assets %}
+                                <option value="{{ asset.id }}">
+                                    {{ asset.name }}
+                                </option>
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="vulnerability_name">Vulnerability Name</label>
+
+                        <input
+                            type="text"
+                            id="vulnerability_name"
+                            name="vulnerability_name"
+                            placeholder="e.g. Weak Passwords"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="vulnerability_category">Vulnerability Category</label>
+
+                        <select id="vulnerability_category"
+                                name="vulnerability_category"
+                                required>
+
+                            <option value="">Select category</option>
+                            <option value="Authentication">Authentication</option>
+                            <option value="Network Security">Network Security</option>
+                            <option value="Software Security">Software Security</option>
+                            <option value="Data Protection">Data Protection</option>
+                            <option value="Configuration">Configuration</option>
+                            <option value="Access Control">Access Control</option>
+                            <option value="Other">Other</option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="severity">Severity Level</label>
+
+                        <select id="severity" name="severity" required>
+
+                            <option value="">Select severity</option>
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                            <option value="Critical">Critical</option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group full-width">
+
+                        <label for="description">Vulnerability Description</label>
+
+                        <textarea
+                            id="description"
+                            name="description"
+                            rows="4"
+                            placeholder="Describe the security weakness and how it could affect the asset..."></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <button type="submit" class="primary-button">
+                    Register Vulnerability
+                </button>
+
+            </form>
+
+            {% else %}
+
+                <p>
+                    No assets have been registered yet.
+                    Please register an asset before identifying vulnerabilities.
+                </p>
+
+                <a href="/assets" class="edit-button">
+                    Go to Asset Management
+                </a>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- REGISTERED VULNERABILITIES TABLE -->
+
+        <section class="panel assets-table-panel">
+
+            <h3>Identified Vulnerabilities</h3>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Affected Asset</th>
+                            <th>Vulnerability</th>
+                            <th>Category</th>
+                            <th>Severity</th>
+                            <th>Description</th>
+                            <th>Date Registered</th>
+                            <th>Actions</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for vulnerability in vulnerabilities %}
+
+                        <tr>
+
+                            <td>{{ vulnerability.id }}</td>
+
+                            <td>{{ vulnerability.asset_name }}</td>
+
+                            <td>{{ vulnerability.vulnerability_name }}</td>
+
+                            <td>{{ vulnerability.vulnerability_category }}</td>
+
+                            <td>
+                                <span class="badge badge-{{ vulnerability.severity|lower }}">
+                                    {{ vulnerability.severity }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {{ vulnerability.description or "No description" }}
+                            </td>
+
+                            <td>{{ vulnerability.created_at }}</td>
+
+                            <td class="action-buttons">
+
+                                <a href="{{ url_for('edit_vulnerability', vulnerability_id=vulnerability.id) }}"
+                                   class="edit-button">
+                                    Edit
+                                </a>
+
+                                <form method="POST"
+                                      action="{{ url_for('delete_vulnerability', vulnerability_id=vulnerability.id) }}"
+                                      onsubmit="return confirm('Are you sure you want to delete this vulnerability?');">
+
+                                    <button type="submit" class="delete-button">
+                                        Delete
+                                    </button>
+
+                                </form>
+
+                            </td>
+
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+                            <td colspan="8" style="text-align:center;">
+                                No vulnerabilities registered yet.
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <footer class="footer">
+            Cybersecurity Risk Assessment System | Vulnerability Assessment
+        </footer>
+
+    </main>
+
+</div>
+
+</body>
+</html>

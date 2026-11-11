@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cybersecurity Risk Assessment System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            CYBER<span>SECURITY</span><br>
+            Risk Assessment
+        </div>
+
+        <p class="nav-label">MAIN MENU</p>
+
+        <a href="/" class="nav-link active">Dashboard</a>
+        <a href="/assets" class="nav-link">Asset Management</a>
+        <a href="/threats" class="nav-link">Threat Identification</a>
+        <a href="/vulnerabilities" class="nav-link">Vulnerability Assessment</a>
+
+        <p class="nav-label">RISK MANAGEMENT</p>
+
+        <a href="/risk-assessment" class="nav-link">Risk Assessment</a>
+        <a href="{{ url_for('risk_register') }}" class="nav-link">Risk Register</a>
+        <a href="#" class="nav-link">Mitigation Plans</a>
+
+        <p class="nav-label">SYSTEM</p>
+
+        <a href="#" class="nav-link">Settings</a>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+                <h1>Security Dashboard</h1>
+                <p>Overview of organisational cybersecurity risks and assets.</p>
+            </div>
+
+            <div class="profile">
+                Administrator
+            </div>
+
+        </header>
+
+
+        <!-- STATISTICS -->
+        <h2 class="section-title">System Overview</h2>
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <p>Total Assets</p>
+                <h2>{{ summary.total_assets }}</h2>
+                <small>Registered organisational assets</small>
+            </div>
+
+            <div class="stat-card">
+                <p>Identified Threats</p>
+                <h2>{{ summary.total_threats }}</h2>
+                <small>Potential security threats</small>
+            </div>
+
+            <div class="stat-card">
+                <p>Assessed Risks</p>
+                <h2>{{ summary.assessed_risks }}</h2>
+                <small>Completed risk assessments</small>
+            </div>
+
+            <div class="stat-card">
+                <p>Critical Risks</p>
+                <h2>{{ summary.critical_risks }}</h2>
+                <small>Require immediate attention</small>
+            </div>
+
+        </section>
+
+
+        <!-- RISK ANALYSIS -->
+        <h2 class="section-title">Risk Analysis</h2>
+
+        <section class="dashboard-grid">
+
+            <div class="panel">
+
+                <h3>Risk Distribution</h3>
+
+                {% set total = summary.assessed_risks %}
+
+                {% for level, count in distribution.items() %}
+
+                <div class="risk-bar">
+
+                    <div class="bar-heading">
+                        <span>{{ level|capitalize }} Risk</span>
+                        <strong>{{ count }}</strong>
+                    </div>
+
+                    <div class="bar-track">
+
+                        <div
+                            class="bar-fill {{ level }}"
+                            style="width: {{ (count / total * 100) if total else 0 }}%">
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <div class="panel">
+
+                <h3>Risk Summary</h3>
+
+                <div class="risk-summary">
+
+                    <div class="risk-box">
+                        <p>Critical Risks</p>
+                        <h2>{{ distribution.critical }}</h2>
+                    </div>
+
+                    <div class="risk-box">
+                        <p>High Risks</p>
+                        <h2>{{ distribution.high }}</h2>
+                    </div>
+
+                    <div class="risk-box">
+                        <p>Medium Risks</p>
+                        <h2>{{ distribution.medium }}</h2>
+                    </div>
+
+                    <div class="risk-box">
+                        <p>Low Risks</p>
+                        <h2>{{ distribution.low }}</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- RISK REGISTER -->
+        <section class="panel">
+
+            <h3>Recent Risk Assessments</h3>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Organisational Asset</th>
+                            <th>Threat</th>
+                            <th>Likelihood</th>
+                            <th>Impact</th>
+                            <th>Score</th>
+                            <th>Risk Level</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for risk in risks %}
+
+                        <tr>
+
+                            <td>{{ risk.asset }}</td>
+                            <td>{{ risk.threat }}</td>
+                            <td>{{ risk.likelihood }}</td>
+                            <td>{{ risk.impact }}</td>
+                            <td>{{ risk.score }}/25</td>
+
+                            <td>
+                                <span class="badge badge-{{ risk.level|lower }}">
+                                    {{ risk.level }}
+                                </span>
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <footer class="footer">
+            Cybersecurity Risk Assessment System | Academic Project 2026
+        </footer>
+
+    </main>
+
+</div>
+
+</body>
+</html>
